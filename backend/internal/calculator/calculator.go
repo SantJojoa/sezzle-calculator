@@ -41,9 +41,11 @@ func Sqrt(a float64) (float64, error) {
 	}
 	return finite(math.Sqrt(a))
 }
-
+// Percentage returns pct percent of value (e.g. 15% of 200 = 30).
+// It divides before multiplying to avoid intermediate overflow
+// (value * pct can exceed MaxFloat64 even when the result fits).
 func Percentage(value, pct float64) (float64, error) {
-	return finite(value * pct / 100)
+	return finite(value * (pct / 100))
 }
 
 func finite(r float64) (float64, error) {

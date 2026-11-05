@@ -19,6 +19,7 @@ func TestAdd(t *testing.T) {
 		{"with-zero", 7, 0, 7, nil},
 		{"decimal", 1.5, 2.25, 3.75, nil},
 		{"float-precision", 0.1, 0.2, 0.30000000000000004, nil},
+		{"large-value-no-intermediate-overflow", math.MaxFloat64, 50, math.MaxFloat64 / 2, nil},
 		{"max-float-no-overflow", math.MaxFloat64, 0, math.MaxFloat64, nil},
 		{"overflow", math.MaxFloat64, math.MaxFloat64, 0, ErrInvalidResult},
 		{"negative-overflow", -math.MaxFloat64, -math.MaxFloat64, 0, ErrInvalidResult},
