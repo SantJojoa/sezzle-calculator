@@ -6,10 +6,11 @@ import (
 )
 
 var (
-	ErrDivisionByZero = errors.New("cannot divide by zero")
-	ErrNegativeNumber = errors.New("cannot calculate square root of negative number")
-	ErrInvalidInput   = errors.New("invalid input")
-	ErrInvalidResult  = errors.New("invalid result")
+	ErrDivisionByZero    = errors.New("cannot divide by zero")
+	ErrNegativeNumber    = errors.New("cannot calculate square root of negative number")
+	ErrInvalidInput      = errors.New("invalid input")
+	ErrInvalidResult     = errors.New("invalid result")
+	ErrInvalidExpression = errors.New("invalid expression")
 )
 
 func Add(a, b float64) (float64, error) {
@@ -41,6 +42,7 @@ func Sqrt(a float64) (float64, error) {
 	}
 	return finite(math.Sqrt(a))
 }
+
 // Percentage returns pct percent of value (e.g. 15% of 200 = 30).
 // It divides before multiplying to avoid intermediate overflow
 // (value * pct can exceed MaxFloat64 even when the result fits).
