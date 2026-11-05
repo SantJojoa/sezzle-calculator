@@ -84,7 +84,28 @@ produced internally (e.g. `2^1024`).
 
 **Result:** 100% statement coverage on `internal/calculator`.
 
+- Fixed a potential intermediate overflow in `Percentage` identified during an
+  AI code review: changed `value * pct / 100` to `value * (pct / 100)`. I added
+  a test case and confirmed it failed with the old formula before applying the fix.
 ---
 
-<!-- Add one section per prompt as you go: handler review, handler tests,
-     parser help, frontend tests, README polish... -->
+---
+
+## 3. Expression evaluator (parser)
+
+**Purpose:** Support full expressions (`2+3*4`, parentheses, unary minus)
+instead of only two-operand operations.
+
+**What AI provided (in a guided conversation):**
+- The design options (frontend chaining vs. backend parser) and the grammar.
+- The test table for `Evaluate`, which I typed in and ran first (test-first).
+- A skeleton with the token types, `Evaluate`, parser helpers, and
+  `expression()` as a pattern to follow.
+- `unary()` and `power()`, with an explanation of how they produce correct
+  precedence and right-associativity.
+
+**What I wrote:**
+- The tokenizer logic (operators, number scanning, identifier scanning).
+- `term()` (following the `expression()` pattern) and `primary()`.
+
+**Result:** All 34 expression cases passed. Coverage on the package: 93%.
