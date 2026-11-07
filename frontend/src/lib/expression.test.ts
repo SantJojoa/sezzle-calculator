@@ -11,6 +11,9 @@ describe('appendKey', () => {
         { name: 'rejects ^ at the start', expr: '', key: '^', want: '' },
         { name: 'rejects a second dot in the same number', expr: '3.1', key: '.', want: '3.1' },
         { name: 'starts a decimal with 0.', expr: '', key: '.', want: '0.' },
+        { name: 'closes an open parenthesis', expr: '(2', key: ')', want: '(2)' },
+        { name: 'rejects ) with no open parenthesis', expr: '2', key: ')', want: '2' },
+        { name: 'ignores unknown keys', expr: '2', key: 'x', want: '2' },
         { name: 'ignores input past 200 characters', expr: '1'.repeat(200), key: '1', want: '1'.repeat(200) },
     ])('$name: "$expr" + "$key" -> "$want"', ({ expr, key, want }) => {
         expect(appendKey(expr, key)).toBe(want)

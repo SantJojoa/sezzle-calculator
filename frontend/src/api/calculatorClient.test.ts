@@ -86,4 +86,29 @@ describe('evaluate', () => {
         })
         expect((err as ApiError).status).toBeUndefined()
     })
+
+    it('throws UNEXPECTED_RESPONSE for an error status with a JSON body of the wrong shape', async () => {
+        mockFetch(async () => Response.json({ message: 'oops' }, { status: 500 }))
+
+        const err = await catchError(evaluate('1+1'))
+
+        expect(err).toBeInstanceOf(ApiError)
+        expect(err).toMatchObject({ code: 'UNEXPECTED_RESPONSE', status: 500 })
+    })
+
+    it('throws UNEXPECTED_RESPONSE when a successful response is not JSON', async () => {
+        mockFetch(async () => new Response('<html>', { status: 200 }))
+
+        const err = await catchError(evaluate('1+1'))
+
+        expect(err).toMatchObject({ code: 'UNEXPECTED_RESPONSE', status: 200 })
+    })
+
+    it('throws UNEXPECTED_RESPONSE when a successful response has no numeric result', async () => {
+        mockFetch(async () => Response.json({ result: 'fourteen' }))
+
+        const err = await catchError(evaluate('1+1'))
+
+        expect(err).toMatchObject({ code: 'UNEXPECTED_RESPONSE', status: 200 })
+    })
 })
