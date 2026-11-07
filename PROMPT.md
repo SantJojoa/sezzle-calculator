@@ -37,7 +37,8 @@ adjusted before committing.
 | 9 | Accessibility review of the React components | Reviewer |
 | 10 | Component tests with React Testing Library | Generator |
 | 11 | Closing coverage gaps | Generator |
-| 12 | Documentation (README and this log) | Generator, reviewer |
+| 12 | Docker setup review | Reviewer |
+| 13 | Documentation, screenshots and coverage reports | Generator, reviewer |
 
 ---
 
@@ -360,18 +361,38 @@ lines 100%. Lint is clean.
 
 ---
 
-## 12. Documentation (README and this log)
+## 12. Docker setup review (Claude Code)
+
+**Prompt:** "Check that everything is ready to deliver", which included
+building and running the full stack.
+
+**What AI did:** built both images with `docker compose up --build`, called the
+API through nginx on port 3000, checked that the backend port is not published,
+that the backend runs as a non-root user and that `SIGTERM` triggers the
+graceful shutdown. It found that `GET /health` through nginx returned the app's
+`index.html` instead of the backend response.
+
+**What I decided:** to proxy `/health` in `nginx.conf` (a `location = /health`
+block) rather than document it as local-only. Re-verified after rebuilding:
+`/health` now returns `{"status":"ok"}` through port 3000.
+
+---
+
+## 13. Documentation, screenshots and coverage reports (Claude Code)
 
 **Prompts:** "Improve clarity and structure of this README. Don't add any
-claims that aren't in my draft." and "Now review PROMPT.md".
+claims that aren't in my draft.", "Now review PROMPT.md" and a final
+delivery check against the assignment text.
 
 **What I wrote:** the README structure (sections, tables, the 400/422 rule),
 the decision of which design points to document, and the requirement that every
 README claim be verifiable.
 
 **What AI generated:** the filled-in README sections (from my notes and the
-code), the verified coverage numbers and curl responses, the restructuring, and
-the review of this file.
+code), the verified coverage numbers and curl responses, the restructuring, the
+review of this file, the committed coverage reports in `docs/coverage/`, and the
+desktop and mobile screenshots (a script drives a headless browser against the
+running Docker stack, types `2+3*4` and captures the result).
 
 **What I checked:** that the README's numbers, endpoints and error codes match
 the code and a real run.

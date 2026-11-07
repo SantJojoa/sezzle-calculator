@@ -1,10 +1,13 @@
-# Full-Stack Calculator
+# Sezzle Calculator
 
 A calculator with a React + TypeScript frontend and a Go REST API. Supports
 full expressions with operator precedence (`2 + 3 × 4 = 14`), parentheses,
 exponents and square roots, evaluated by a hand-written recursive descent parser.
 
-![Screenshot](docs/screenshot.png)
+<p align="center">
+  <img src="docs/screenshot-desktop.png" alt="Calculator on desktop showing 2+3×4 = 14" width="420">
+  <img src="docs/screenshot-mobile.png" alt="Calculator on a 375px-wide phone showing 2+3×4 = 14" width="220">
+</p>
 
 ## Contents
 
@@ -306,6 +309,10 @@ pnpm lint
 | Frontend (lines)            | 100%     |
 | Frontend (branches)         | 86.1%    |
 
+Full reports are committed in [`docs/coverage/`](docs/coverage):
+[backend](docs/coverage/backend.txt) (per function) and
+[frontend](docs/coverage/frontend.txt) (per file).
+
 `cmd/server`, `main.tsx` and `App.tsx` contain only wiring and are excluded;
 all their logic lives in tested packages. (`make test` runs `./...`, so it
 also lists `cmd/server` at 0%.)
@@ -361,7 +368,7 @@ also lists `cmd/server` at 0%.)
   focused key activates that key instead of submitting.
 - **Docker:** multi-stage builds; a static Go binary (`CGO_ENABLED=0`) running
   as a non-root user in the backend image; nginx as a same-origin reverse
-  proxy with the backend unpublished; a healthcheck that gates frontend start
+  proxy for `/api/` and `/health` with the backend unpublished; a healthcheck that gates frontend start
   (`depends_on: service_healthy`); and `ENTRYPOINT` in exec form so the server
   receives `SIGTERM` and shuts down gracefully.
 
