@@ -176,3 +176,22 @@ codes. Don't change the test loop."
   README) instead of adding an artificial test to raise the number.
 
 **Result:** `internal/api` 96.3%, `internal/calculator` 93.0%.
+
+---
+
+## 6. Frontend API client tests (Claude Code)
+
+**Prompt:** "Write Vitest tests for this API client, mocking global fetch with
+vi.stubGlobal: successful result, backend JSON error (verify ApiError code,
+message and status), non-JSON error response (text/plain 405), and network
+failure. Restore mocks after each test."
+
+**What I wrote:** the client skeleton in `calculatorClient.ts` (`ApiError`,
+the `evaluate` request and network-error handling) and the TODO list for the
+error and result branches.
+
+**What AI generated:** the 4 tests in `calculatorClient.test.ts`, plus the TODO
+bodies (error/result parsing with type guards) and the endpoint fix
+(`/api/v1/calculate` -> `/api/v1/evaluate`).
+
+**Result:** 4/4 tests pass.
