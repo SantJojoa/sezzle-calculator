@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/santiagojojoa/sizzle-calculator/backend/internal/calculator"
+	"github.com/SantJojoa/sezzle-calculator/backend/internal/calculator"
 )
 
 const (
