@@ -1,4 +1,4 @@
-# Sizzle Calculator
+# Sezzle Calculator
 
 A calculator exposed as a JSON REST API (Go backend).
 

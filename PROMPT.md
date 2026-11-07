@@ -140,3 +140,6 @@ with a short explanation each."
 
 **Note:** Some findings corrected suggestions from my earlier AI-guided
 session (returning decode errors verbatim, 422 for syntax errors).
+
+
+Here’s my Go HTTP router test with a table-driven structure and two cases I wrote. Add cases following exactly the same style for: each endpoint’s success path (add, subtract, multiply, divide, power, percentage, sqrt, evaluate, GET /health); a zero operand to verify missing-field detection uses pointers; 400 cases (invalid JSON, empty body, unknown field, trailing data after the object, missing a, missing b, string instead of number, sqrt without a, empty and whitespace-only expression, expression over 200 bytes, invalid expression syntax); 413 for a body over 4 KB; 422 cases (sqrt of negative, overflow, division by zero inside an expression); 405 for GET on a POST route; 404 for an unknown path. Use my error codes: [pega tu lista de códigos]. Don’t change the test loop.”
