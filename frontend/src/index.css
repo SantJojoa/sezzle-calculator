@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* short landscape screens (phones turned sideways, folded devices) */
+@custom-variant short (@media (max-height: 520px) and (orientation: landscape));
+
 @theme {
     --color-brand-dark: #211733; /* page background */
     --color-surface: #2c2240; /* card */

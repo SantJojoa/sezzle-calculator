@@ -72,7 +72,7 @@ export function Keypad({ onKey, onClear, onDelete, onSubmit, disabled = false }:
     }
 
     return (
-        <div role="group" aria-label="Calculator keypad" className="grid grid-cols-4 gap-2">
+        <div role="group" aria-label="Calculator keypad" className="grid grid-cols-4 gap-2 md:gap-3 short:flex-1 short:gap-1.5">
             {KEYS.map((k) => (
                 <button
                     key={k.label}
@@ -83,7 +83,7 @@ export function Keypad({ onKey, onClear, onDelete, onSubmit, disabled = false }:
                     // keep focus off the button on mouse click, so a following Enter
                     // still submits (see the Enter-on-button rule in Calculator)
                     onMouseDown={(e) => e.preventDefault()}
-                    className={`min-h-12 rounded-xl p-3 text-xl font-semibold transition hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 ${k.className ?? ''}`}
+                    className={`min-h-12 rounded-xl p-3 text-xl font-semibold md:min-h-16 md:text-2xl short:min-h-9 short:p-1 short:text-base transition hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 ${k.className ?? ''}`}
                 >
                     {k.label}
                 </button>

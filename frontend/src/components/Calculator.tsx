@@ -35,7 +35,7 @@ export function Calculator() {
     }, [press, deleteLast, clear, submit])
 
     return (
-        <div className="flex w-full max-w-sm flex-col gap-4 rounded-3xl bg-surface p-4 shadow-xl shadow-black/30 sm:p-6">
+        <div className="flex w-full max-w-sm flex-col gap-4 rounded-3xl bg-surface p-4 shadow-xl shadow-black/30 sm:p-6 md:max-w-lg md:gap-5 md:p-8 short:max-w-3xl short:flex-row short:items-stretch short:gap-3 short:p-3">
             <Display expression={expression} result={result} error={error} loading={loading} />
             <Keypad
                 onKey={press}
