@@ -9,9 +9,9 @@ interface DisplayProps {
 
 export function Display({ expression, result, error, loading = false }: DisplayProps) {
     return (
-        <div className="rounded-lg bg-gray-900 p-4 text-right text-white" aria-busy={loading}>
+        <div className="rounded-2xl bg-display p-4 text-right text-white" aria-busy={loading}>
             <div
-                className="min-h-8 overflow-x-auto break-all text-xl text-gray-400"
+                className="min-h-7 break-all text-base text-muted"
                 data-testid="expression"
             >
                 {toDisplay(expression)}
@@ -19,7 +19,7 @@ export function Display({ expression, result, error, loading = false }: DisplayP
 
             {/* live region stays mounted so screen readers announce changes to it */}
             <div
-                className="min-h-14 break-all text-4xl font-semibold"
+                className="min-h-12 break-all text-4xl font-bold tabular-nums text-white"
                 aria-live="polite"
                 data-testid="result"
             >
@@ -28,7 +28,7 @@ export function Display({ expression, result, error, loading = false }: DisplayP
 
             {/* rendered only when there is an error: role="alert" announces on insertion */}
             {error && (
-                <p role="alert" className="mt-2 text-sm text-red-400">
+                <p role="alert" className="mt-2 text-sm text-error">
                     {error}
                 </p>
             )}

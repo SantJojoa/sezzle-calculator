@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@theme {
+    --color-brand-dark: #211733; /* page background */
+    --color-surface: #2c2240; /* card */
+    --color-display: #140d1f; /* display background */
+    --color-key: #3a3150; /* number keys */
+    --color-brand: #693a94; /* operator keys */
+    --color-accent: #9ff4d9; /* "=" key */
+    --color-danger: #7a3150; /* "C" key */
+    --color-error: #ff9b9b; /* error text */
+    --color-muted: #b8aecb; /* expression line */
+}

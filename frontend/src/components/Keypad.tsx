@@ -17,15 +17,15 @@ interface KeyDef {
     className?: string // grid span / colour overrides
 }
 
-const DIGIT = 'bg-gray-700 hover:bg-gray-600'
-const OPERATOR = 'bg-amber-600 hover:bg-amber-500'
-const UTILITY = 'bg-gray-500 hover:bg-gray-400'
+const DIGIT = 'bg-key text-white'
+const OPERATOR = 'bg-brand text-white'
+const CLEAR = 'bg-danger text-white'
 
 const KEYS: KeyDef[] = [
-    { label: 'C', action: 'clear', ariaLabel: 'clear', className: UTILITY },
-    { label: '(', action: 'key', value: '(', ariaLabel: 'open parenthesis', className: UTILITY },
-    { label: ')', action: 'key', value: ')', ariaLabel: 'close parenthesis', className: UTILITY },
-    { label: '⌫', action: 'delete', ariaLabel: 'delete', className: UTILITY },
+    { label: 'C', action: 'clear', ariaLabel: 'clear', className: CLEAR },
+    { label: '(', action: 'key', value: '(', ariaLabel: 'open parenthesis', className: OPERATOR },
+    { label: ')', action: 'key', value: ')', ariaLabel: 'close parenthesis', className: OPERATOR },
+    { label: '⌫', action: 'delete', ariaLabel: 'delete', className: OPERATOR },
 
     { label: '√', action: 'key', value: 'sqrt(', ariaLabel: 'square root', className: OPERATOR },
     { label: '^', action: 'key', value: '^', ariaLabel: 'power', className: OPERATOR },
@@ -50,7 +50,7 @@ const KEYS: KeyDef[] = [
         label: '=',
         action: 'submit',
         ariaLabel: 'equals',
-        className: 'row-span-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:hover:bg-emerald-600',
+        className: 'row-span-2 bg-accent text-brand-dark',
     },
 
     { label: '0', action: 'key', value: '0', className: `col-span-2 ${DIGIT}` },
@@ -80,7 +80,7 @@ export function Keypad({ onKey, onClear, onDelete, onSubmit, disabled = false }:
                     aria-label={k.ariaLabel}
                     disabled={k.action === 'submit' ? disabled : false}
                     onClick={() => handle(k)}
-                    className={`rounded-lg p-4 text-xl font-medium text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${k.className ?? ''}`}
+                    className={`min-h-12 rounded-xl p-3 text-xl font-semibold transition hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 ${k.className ?? ''}`}
                 >
                     {k.label}
                 </button>
