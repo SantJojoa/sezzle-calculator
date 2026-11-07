@@ -179,6 +179,23 @@ X-Content-Type-Options: nosniff
 Method Not Allowed
 ```
 
+## Tests and coverage
+
+Run from `backend/`:
+
+```bash
+make test       # go test ./... -race -cover
+make coverage   # writes coverage.out and coverage.html
+```
+
+| Package | Statement coverage |
+|---|---|
+| `internal/api` | 96.3% |
+| `internal/calculator` | 93.0% |
+| `cmd/server` | 0.0% |
+
+`cmd/server` has no tests on purpose: `main.go` only wires together the router and middleware, whose logic is tested in `internal/`.
+
 ## Known limitations / future work
 
 | Limitation | Why it is not fixed |

@@ -141,5 +141,38 @@ with a short explanation each."
 **Note:** Some findings corrected suggestions from my earlier AI-guided
 session (returning decode errors verbatim, 422 for syntax errors).
 
+---
 
-Here’s my Go HTTP router test with a table-driven structure and two cases I wrote. Add cases following exactly the same style for: each endpoint’s success path (add, subtract, multiply, divide, power, percentage, sqrt, evaluate, GET /health); a zero operand to verify missing-field detection uses pointers; 400 cases (invalid JSON, empty body, unknown field, trailing data after the object, missing a, missing b, string instead of number, sqrt without a, empty and whitespace-only expression, expression over 200 bytes, invalid expression syntax); 413 for a body over 4 KB; 422 cases (sqrt of negative, overflow, division by zero inside an expression); 405 for GET on a POST route; 404 for an unknown path. Use my error codes: [pega tu lista de códigos]. Don’t change the test loop.”
+## 5. HTTP router and middleware tests (Claude Code)
+
+**Prompt:** "Here's my Go HTTP router test with a table-driven structure and
+two cases I wrote. Add cases following exactly the same style for: each
+endpoint's success path; a zero operand to verify missing-field detection uses
+pointers; 400 cases (invalid JSON, empty body, unknown field, trailing data,
+missing a/b, string instead of number, sqrt without a, empty and whitespace-only
+expression, expression over 200 bytes, invalid syntax); 413 for a body over
+4 KB; 422 cases (negative sqrt, overflow, division by zero inside an
+expression); 405 for GET on a POST route; 404 for an unknown path. Use my error
+codes. Don't change the test loop."
+
+**What I wrote:**
+- The test loop and the first two router cases (`add-success`,
+  `divide-by-zero`).
+- The structure of the middleware tests (`TestCORSPreflight` skeleton).
+
+**What AI generated:**
+- The remaining 29 router cases, in the same positional-literal style.
+- `TestCORSRegularRequest`, `TestRecover` and `TestLoggerRecordsStatus`, and
+  the missing assertions in `TestCORSPreflight` (the file did not compile:
+  `called` was declared but unused).
+
+**What I adjusted:**
+- Oversized-body cases are built from `maxExpressionLen` / `maxBodyBytes`
+  instead of magic numbers; the 413 payload goes inside `expression` so the
+  decoder hits the size limit before an unknown-field error.
+- Log redirection in the middleware tests restores `os.Stderr` with `defer`
+  rather than silencing the logger after the test.
+- `cmd/server` is left untested on purpose (documented in `NOTES.md` and the
+  README) instead of adding an artificial test to raise the number.
+
+**Result:** `internal/api` 96.3%, `internal/calculator` 93.0%.

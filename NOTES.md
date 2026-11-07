@@ -59,3 +59,14 @@ GET /health
 {"error": {"code": "DIVISION_BY_ZERO", "message": "Cannot divide by zero"}}
 
 On percentage a is the value and b is the percentage (Remember documentate on readme)
+
+## Testing
+
+- `cmd/server` intentionally has no tests (0% coverage): `main.go` only reads
+  env vars and wires `Logger`/`Recover`/`CORS`/`NewRouter` into an `http.Server`.
+  All the logic lives in `internal/` and is tested there; a test for `main`
+  would only exercise `ListenAndServe` and exist to raise the number.
+- Router tests are table-driven (`handlers_test.go`) and run through
+  `NewRouter()` with `httptest`, so they need no running server.
+- Middleware tests redirect `log` output to a buffer and restore it with
+  `defer log.SetOutput(os.Stderr)`.
