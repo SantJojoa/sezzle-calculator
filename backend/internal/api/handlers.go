@@ -183,7 +183,7 @@ func handleEvaluate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(req.Expression) > maxExpressionLen {
-		writeError(w, http.StatusBadRequest, "EXPRESSION_TOO_LONG", "Expression exceeds the maximum length")
+		writeError(w, http.StatusBadRequest, "EXPRESSION_TOO_LONG", "expression must not exceed 200 bytes")
 		return
 	}
 
