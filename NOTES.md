@@ -51,3 +51,11 @@ GET /health
   `%` not supported inside expressions (ambiguous: modulo vs percent).
 - Max expression length enforced in the HTTP handler, which also bounds
   recursion depth for inputs like `((((((...`.
+
+# Answers format
+//success
+{"result": 42}
+//error
+{"error": {"code": "DIVISION_BY_ZERO", "message": "Cannot divide by zero"}}
+
+On percentage a is the value and b is the percentage (Remember documentate on readme)
