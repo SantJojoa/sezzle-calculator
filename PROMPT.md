@@ -270,3 +270,5 @@ the error `alert`. I checked that the two Enter tests fail when their fix is
 removed.
 
 **Result:** 27/27 frontend tests pass, lint clean.
+
+Write React Testing Library tests for this Calculator component using userEvent. Mock the ‘../api/calculatorClient’ module with vi.mock. Cover: clicking keys builds the expression; ‘=’ shows the formatted result; backend ApiError message is shown in the alert; client-side validation error (unclosed parenthesis) does NOT call the API; pressing an operator after a result continues from it; physical keyboard input (typing ‘2+3’ and Enter); ‘=’ is disabled while loading.

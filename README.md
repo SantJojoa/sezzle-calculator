@@ -181,6 +181,8 @@ Method Not Allowed
 
 ## Tests and coverage
 
+### Backend
+
 Run from `backend/`:
 
 ```bash
@@ -195,6 +197,19 @@ make coverage   # writes coverage.out and coverage.html
 | `cmd/server` | 0.0% |
 
 `cmd/server` has no tests on purpose: `main.go` only wires together the router and middleware, whose logic is tested in `internal/`.
+
+### Frontend
+
+Run from `frontend/`:
+
+```bash
+pnpm test        # vitest (watch mode)
+pnpm coverage    # vitest run --coverage
+```
+
+| Frontend (`frontend/src`) | Statements | Branches | Lines |
+|---------------------------|-----------:|---------:|------:|
+| Total                     | 95.8%      | 86.1%    | 100%  |
 
 ## Known limitations / future work
 
