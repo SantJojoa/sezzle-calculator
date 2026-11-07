@@ -8,7 +8,6 @@ import (
 var (
 	ErrDivisionByZero    = errors.New("cannot divide by zero")
 	ErrNegativeNumber    = errors.New("cannot calculate square root of negative number")
-	ErrInvalidInput      = errors.New("invalid input")
 	ErrInvalidResult     = errors.New("invalid result")
 	ErrInvalidExpression = errors.New("invalid expression")
 )

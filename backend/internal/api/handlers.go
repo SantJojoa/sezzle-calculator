@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
+	"strings"
 
 	"github.com/santiagojojoa/sizzle-calculator/backend/internal/calculator"
 )
@@ -48,6 +50,7 @@ type errorResponse struct {
 
 func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(v)
 }
@@ -71,6 +74,24 @@ func decode(w http.ResponseWriter, r *http.Request, dst any) error {
 	return nil
 }
 
+// writeDecodeError maps JSON decoding failures to safe client messages.
+func writeDecodeError(w http.ResponseWriter, err error) {
+	var maxErr *http.MaxBytesError
+	switch {
+	case errors.As(err, &maxErr):
+		writeError(w, http.StatusRequestEntityTooLarge, "BODY_TOO_LARGE", "request body must not exceed 4 KB")
+	case strings.HasPrefix(err.Error(), "json: unknown field"):
+		writeError(w, http.StatusBadRequest, "INVALID_JSON", "request body contains an unknown field")
+	default:
+		writeError(w, http.StatusBadRequest, "INVALID_JSON", "request body must be a single valid JSON object")
+	}
+}
+
+// writeMissingField reports a required field that is absent or empty.
+func writeMissingField(w http.ResponseWriter, field string) {
+	writeError(w, http.StatusBadRequest, "MISSING_FIELD", `field "`+field+`" is required`)
+}
+
 func writeCalError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, calculator.ErrDivisionByZero):
@@ -83,9 +104,10 @@ func writeCalError(w http.ResponseWriter, err error) {
 		writeError(w, http.StatusUnprocessableEntity, "INVALID_RESULT", err.Error())
 
 	case errors.Is(err, calculator.ErrInvalidExpression):
-		writeError(w, http.StatusUnprocessableEntity, "INVALID_EXPRESSION", err.Error())
+		writeError(w, http.StatusBadRequest, "INVALID_EXPRESSION", err.Error())
 
 	default:
+		log.Printf("unexpected calculator error: %v", err)
 		writeError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "An unexpected error occurred")
 	}
 }
@@ -96,12 +118,16 @@ func handleBinary(op binaryOp) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req binaryRequest
 		if err := decode(w, r, &req); err != nil {
-			writeError(w, http.StatusBadRequest, "INVALID_JSON", err.Error())
+			writeDecodeError(w, err)
 			return
 		}
 
-		if req.A == nil || req.B == nil {
-			writeError(w, http.StatusBadRequest, "MISSING_FIELDS", "Both 'a' and 'b' are required")
+		if req.A == nil {
+			writeMissingField(w, "a")
+			return
+		}
+		if req.B == nil {
+			writeMissingField(w, "b")
 			return
 		}
 
@@ -118,12 +144,12 @@ func handleBinary(op binaryOp) http.HandlerFunc {
 func handleSqrt(w http.ResponseWriter, r *http.Request) {
 	var req unaryRequest
 	if err := decode(w, r, &req); err != nil {
-		writeError(w, http.StatusBadRequest, "INVALID_JSON", err.Error())
+		writeDecodeError(w, err)
 		return
 	}
 
 	if req.A == nil {
-		writeError(w, http.StatusBadRequest, "MISSING_FIELDS", "'a' is required")
+		writeMissingField(w, "a")
 		return
 	}
 
@@ -139,12 +165,12 @@ func handleSqrt(w http.ResponseWriter, r *http.Request) {
 func handleEvaluate(w http.ResponseWriter, r *http.Request) {
 	var req expressionRequest
 	if err := decode(w, r, &req); err != nil {
-		writeError(w, http.StatusBadRequest, "INVALID_JSON", err.Error())
+		writeDecodeError(w, err)
 		return
 	}
 
-	if req.Expression == "" {
-		writeError(w, http.StatusBadRequest, "MISSING_FIELDS", "'expression' is required")
+	if strings.TrimSpace(req.Expression) == "" {
+		writeMissingField(w, "expression")
 		return
 	}
 	if len(req.Expression) > maxExpressionLen {
