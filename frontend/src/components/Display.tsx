@@ -9,20 +9,25 @@ interface DisplayProps {
 
 export function Display({ expression, result, error, loading = false }: DisplayProps) {
     return (
-        <div className="rounded-2xl bg-display p-4 text-right text-white" aria-busy={loading}>
+        <div className="rounded-2xl bg-display p-4 text-right text-white">
             <div
                 className="min-h-7 break-all text-base text-muted"
                 data-testid="expression"
             >
+                {expression !== '' && <span className="sr-only">Expression: </span>}
                 {toDisplay(expression)}
             </div>
 
-            {/* live region stays mounted so screen readers announce changes to it */}
+            {/* live region must always stay mounted (even empty): only its content changes */}
             <div
                 className="min-h-12 break-all text-4xl font-bold tabular-nums text-white"
+                role="status"
                 aria-live="polite"
+                aria-atomic="true"
+                aria-busy={loading}
                 data-testid="result"
             >
+                {result !== null && <span className="sr-only">Result: </span>}
                 {result}
             </div>
 

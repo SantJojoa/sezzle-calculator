@@ -195,3 +195,78 @@ bodies (error/result parsing with type guards) and the endpoint fix
 (`/api/v1/calculate` -> `/api/v1/evaluate`).
 
 **Result:** 4/4 tests pass.
+
+
+
+
+Review this React component for accessibility (labels, `aria-live`, keyboard usage, focus) and suggest minimal changes only.
+
+Design a clean, modern calculator web app UI, single screen, shown on both
+mobile (375px wide) and desktop. Dark theme only.
+Color palette (use these exact colors):
+- Page background: #211733 (deep purple)
+- Card and number keys: slightly lighter tints of #211733, so the card
+  stands out from the page
+- Operator keys: #693a94 with white text
+- "=" key: #9ff4d9 (mint) with #211733 text — the only bright element,
+  most prominent key
+- Display result text: white (or mint for emphasis)
+- "C" key: a muted warning tone that fits the purple palette
+- Error message: a soft coral/red readable on the dark background
+Ensure WCAG AA contrast for all text.
+Layout:
+- A centered card (max width ~360px) containing a display and a keypad.
+- Display at the top: the current expression on one line (smaller, muted,
+  right-aligned) and the result below it (large, bold, right-aligned,
+  tabular numbers). Long expressions should wrap or scroll, not overflow.
+- Keypad: 4-column grid, buttons at least 48px tall, rounded corners:
+    C    (    )    ⌫
+    √    ^    ÷    ×
+    7    8    9    −
+    4    5    6    +
+    1    2    3    =
+    0 (spans 2 columns)  .
+- Three visually distinct key types: numbers, operators, and "=".
+Show these states:
+1. Empty / initial
+2. Typing an expression: "2 + 3 × 4"
+3. Result shown: "14"
+4. Error: a short inline error message below the result, e.g.
+   "cannot divide by zero" (clear but not alarming)
+5. Loading: "=" button disabled
+Style: minimal, professional fintech feel, generous spacing, subtle depth
+on the card (soft shadow or border), visible focus rings for keyboard
+users, no logos, no brand names, no features beyond the calculator.
+
+---
+
+## 7. Accessibility review of the React components (Claude Code)
+
+**Prompt:** "Review this React component for accessibility (labels,
+aria-live, keyboard usage, focus) and suggest minimal changes only."
+
+**Accepted and applied (1-6 and 8):**
+- Skip `Enter` when the event target is a button, so a focused key activates
+  itself instead of submitting.
+- `<title>Calculator</title>`.
+- `role="status"` + `aria-atomic` on the always-mounted result region, with a
+  visually hidden "Result: " prefix; `aria-busy` moved onto that region.
+- `role="group"` + `aria-label` on the keypad; hidden "Expression: " prefix.
+- Ignore shortcuts when focus is in an input or textarea.
+
+**Left out (7), with the reason:** replacing `disabled` with `aria-disabled`
+on `=`. The impact is low (the listener is on `window`, so Enter keeps working
+when focus is lost) and it would force changing the "disabled while loading"
+behaviour and its test. Documented under "Known limitations" in the README.
+
+**Side effect of #1, found and fixed:** once Enter is ignored on buttons, a
+mouse click leaves focus on the clicked key, so a following Enter re-pressed
+that key instead of submitting. Fixed with `onMouseDown={e => e.preventDefault()}`
+on the keypad buttons so clicks do not move focus.
+
+**Tests added:** `Calculator.test.tsx` covers the live region (`status`),
+Enter on a focused key, Enter after a mouse click, the group/symbol labels and
+the error `alert`. I checked that the two Enter tests fail when their fix is
+removed.
+
+**Result:** 27/27 frontend tests pass, lint clean.

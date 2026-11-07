@@ -12,12 +12,16 @@ export function Calculator() {
         function onKeyDown(e: KeyboardEvent) {
             // leave browser/OS shortcuts (Cmd+C, Ctrl+V, ...) alone
             if (e.ctrlKey || e.metaKey) return
+            // never hijack typing in form fields
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
 
             if (INPUT_KEY.test(e.key)) {
                 e.preventDefault() // e.g. "/" would open quick find in some browsers
                 press(e.key)
             } else if (e.key === 'Enter' || e.key === '=') {
-                e.preventDefault() // also stops Enter from clicking a focused keypad button
+                // Enter on a focused button must activate that button, not submit
+                if (e.key === 'Enter' && e.target instanceof HTMLButtonElement) return
+                e.preventDefault()
                 if (!e.repeat) void submit()
             } else if (e.key === 'Backspace') {
                 deleteLast()

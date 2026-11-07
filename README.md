@@ -208,3 +208,4 @@ make coverage   # writes coverage.out and coverage.html
 | `handleBinary` and `handleSqrt` duplicate decode/validate flow | They are two small handlers; a further abstraction would hurt readability. |
 | No `slog` or dependency injection in the router | Out of scope here; it would be the first thing to add in a real service. |
 | `ALLOWED_ORIGIN="*"` is not validated | Configuration is the deployer's responsibility; the expected value is documented above (a single origin such as `http://localhost:5173`). |
+| Disabled `=` key drops keyboard focus while loading | Low impact: the keyboard listener is on `window`, so Enter and typing keep working. Switching to `aria-disabled` would also change the "disabled while loading" test. |
