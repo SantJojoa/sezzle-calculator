@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { ApiError, evaluate } from './CalculatorClient'
+import { ApiError, evaluate } from './calculatorClient'
 
 function mockFetch(impl: () => Promise<Response>) {
     const fetchMock = vi.fn(impl)
