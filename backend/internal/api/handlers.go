@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"log"
+	"mime"
 	"net/http"
 	"strings"
 
@@ -16,6 +17,8 @@ const (
 	maxBodyBytes     = 4 << 10 // 4 KB: far more than any valid request needs
 	maxExpressionLen = 200
 )
+
+var errUnsupportedMediaType = errors.New("content type must be application/json")
 
 // --- Request / response types ---
 
@@ -62,6 +65,10 @@ func writeError(w http.ResponseWriter, status int, code, message string) {
 // decode reads exactly one JSON object into dst. It rejects oversized
 // bodies, unknown fields, and trailing data like `{"a":1}{"b":2}`.
 func decode(w http.ResponseWriter, r *http.Request, dst any) error {
+	mt, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+	if err != nil || mt != "application/json" {
+		return errUnsupportedMediaType
+	}
 	r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()
@@ -78,6 +85,8 @@ func decode(w http.ResponseWriter, r *http.Request, dst any) error {
 func writeDecodeError(w http.ResponseWriter, err error) {
 	var maxErr *http.MaxBytesError
 	switch {
+	case errors.Is(err, errUnsupportedMediaType):
+		writeError(w, http.StatusUnsupportedMediaType, "UNSUPPORTED_MEDIA_TYPE", "Content-Type must be application/json")
 	case errors.As(err, &maxErr):
 		writeError(w, http.StatusRequestEntityTooLarge, "BODY_TOO_LARGE", "request body must not exceed 4 KB")
 	case strings.HasPrefix(err.Error(), "json: unknown field"):
