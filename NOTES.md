@@ -70,3 +70,27 @@ On percentage a is the value and b is the percentage (Remember documentate on re
   `NewRouter()` with `httptest`, so they need no running server.
 - Middleware tests redirect `log` output to a buffer and restore it with
   `defer log.SetOutput(os.Stderr)`.
+
+## Docker deployment
+
+- **nginx as reverse proxy, same origin, no CORS.** The frontend container
+  serves the built SPA and proxies `/api/` to `backend:8080`. The browser only
+  talks to one origin, so CORS never comes into play in Docker. The backend
+  publishes no ports to the host (only `frontend` maps `3000:80`), so it is
+  reachable only inside the Compose network.
+- **Multi-stage builds.** Both images build in a throwaway stage (Go / Node)
+  and copy only the artifact into a slim runtime image (Alpine for the backend,
+  nginx for the frontend).
+- **Static Go binary, non-root user.** `CGO_ENABLED=0` with `-trimpath` and
+  stripped symbols gives a self-contained binary; the backend image runs as a
+  dedicated unprivileged user (`app`, uid 10001). The frontend image keeps the
+  stock nginx user setup (master process as root) and is not hardened further.
+- **Healthcheck controls start order.** The backend defines a healthcheck
+  (`wget /health`) and the frontend uses `depends_on: condition: service_healthy`,
+  so nginx only starts once the API answers. This covers startup only; nginx
+  resolves `backend` at startup, so it must be restarted if the backend
+  container is recreated with a new address.
+- **`ENTRYPOINT` in exec form** (`["/server"]`). The server is PID 1 and
+  receives `SIGTERM` directly from `docker compose down`, so the graceful
+  shutdown in `main.go` runs. The shell form would wrap it in `sh -c`, which
+  does not forward signals.

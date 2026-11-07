@@ -1,8 +1,27 @@
 # Sezzle Calculator
 
-A calculator exposed as a JSON REST API (Go backend).
+A calculator exposed as a JSON REST API (Go backend) with a React frontend.
 
-## Running the backend
+## Running with Docker
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:3000`. Only the frontend (nginx) is published to the host; it serves the UI and proxies `/api/` to the backend, which is reachable only inside the Compose network.
+
+## Calling the API
+
+There are two ways to reach the API, depending on how it is running:
+
+| How it runs | Base URL | Example |
+|---|---|---|
+| Docker (`docker compose up`) | `http://localhost:3000/api/v1/...` | `curl -X POST localhost:3000/api/v1/add -H 'Content-Type: application/json' -d '{"a":5,"b":3}'` |
+| Local (`go run ./cmd/server`) | `http://localhost:8080/api/v1/...` | `curl -X POST localhost:8080/api/v1/add -H 'Content-Type: application/json' -d '{"a":5,"b":3}'` |
+
+With Docker, the backend port is not exposed, so `localhost:8080` will not respond. The examples below use the local URL; swap in port `3000` when running with Docker.
+
+## Running the backend locally
 
 ```bash
 cd backend
@@ -20,7 +39,7 @@ Environment variables:
 
 All POST requests must send `Content-Type: application/json`.
 
-With the server running on `localhost:8080`, these requests were run and produced the responses shown (responses trimmed to status line, relevant headers and body; the `Access-Control-*` headers are identical on every response and `Date` varies).
+With the backend running locally on `localhost:8080`, these requests were run and produced the responses shown (responses trimmed to status line, relevant headers and body; the `Access-Control-*` headers are identical on every response and `Date` varies).
 
 ### Successful operations
 
