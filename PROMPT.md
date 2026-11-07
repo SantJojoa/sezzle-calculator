@@ -109,3 +109,34 @@ instead of only two-operand operations.
 - `term()` (following the `expression()` pattern) and `primary()`.
 
 **Result:** All 34 expression cases passed. Coverage on the package: 93%.
+
+---
+
+## 4. Security and code review of the HTTP layer (Claude Code)
+
+**Prompt:** "Review this Go HTTP handler code for idiomatic error handling,
+input validation and security issues. Don't rewrite it — list concrete problems
+with a short explanation each."
+
+**Accepted and fixed:**
+- Consistent status-code rule: 400 = malformed input (incl. expression syntax),
+  422 = valid input but mathematically undefined.
+- Stopped returning raw decode errors to clients; 413 for oversized bodies.
+- Consistent `MISSING_FIELD` code and message format; whitespace-only
+  expressions rejected.
+- Logged unexpected errors; removed unused `ErrInvalidInput`.
+- Log injection (`%q`), `nosniff`, `Vary: Origin`, `IdleTimeout`.
+- Status code in request logs, panic-recovery middleware, graceful shutdown,
+  and `Content-Type: application/json` enforcement (415).
+
+**Documented as known limitations (not fixed, with reasons):**
+- Recursion depth bounded by the 200-byte cap rather than an explicit counter.
+- `len()` counts bytes (tokenizer is ASCII-only; message now says "200 bytes").
+- Plain-text 404/405 from the standard mux.
+- CORS preflight answers on any path.
+- `writeJSON` without a buffer; handler duplication; no `slog`/DI;
+  `ALLOWED_ORIGIN="*"` not validated.
+  (Reasons for each are in the README.)
+
+**Note:** Some findings corrected suggestions from my earlier AI-guided
+session (returning decode errors verbatim, 422 for syntax errors).
