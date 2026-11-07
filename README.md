@@ -415,5 +415,5 @@ structured logging with `slog`, an explicit parser depth counter.
 
 ## AI usage
 
-See [PROMPT.md](PROMPT.md) for every prompt used, and what I accepted,
+See [PROMPTS.md](PROMPTS.md) for every prompt used, and what I accepted,
 changed or rejected.
